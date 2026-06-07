@@ -104,13 +104,10 @@ The script creates the following tables:
 | ------------- | -------------------------------------- |
 | `restaurants` | Stores restaurant and bar locations    |
 | `buildings`   | Stores building footprints and heights |
-| `reviews`     | Stores user reviews                    |
 
 The `restaurants` table is loaded from `data/restaurants.csv`.
 
 The `buildings` table is loaded from `data/buildings.csv`.
-
-The `reviews` table is initially empty and is used by the web app when users add reviews.
 
 ---
 
@@ -127,7 +124,7 @@ Then open the application in a browser:
 ```text
 http://127.0.0.1:5001
 ```
-It takes some time for the restaurants to load 
+It takes some time for the everything to load 
 ---
 
 ## How to interact with the app
@@ -138,7 +135,6 @@ When the app is running, the user can:
 - See whether each venue is currently in sun or shadow
 - Click on a marker to see information about the venue
 - Search for venues by name or address using regular expressions
-- Add reviews, which are stored in the database using SQL `INSERT`
 
 ---
 
@@ -150,8 +146,6 @@ When the app is running, the user can:
 | `/ping`                        | GET    | Checks whether the server is running                   |
 | `/api/venues`                  | GET    | Returns restaurants with sun/shadow status             |
 | `/api/venues?q=...`            | GET    | Searches restaurants using regular expression matching |
-| `/api/reviews/<restaurant_id>` | GET    | Returns reviews for a restaurant                       |
-| `/api/reviews`                 | POST   | Adds a new review to the database                      |
 
 ---
 
@@ -185,8 +179,6 @@ The application interacts with the database using SQL.
 Examples of SQL usage in the app include:
 
 - `SELECT` statements to retrieve restaurants and buildings
-- `SELECT` statements to retrieve reviews
-- `INSERT` statements to add new reviews
 
 This satisfies the requirement that the web application must interact with a database using SQL.
 
