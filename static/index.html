@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sunis - Find solen i København</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: sans-serif; }
+        #header {
+            background: #f4a520;
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+        #header span { font-size: 0.9rem; font-weight: normal; margin-left: 10px; }
+        #map { height: calc(100vh - 55px); }
+    </style>
+</head>
+<body>
+    <div id="header">
+        ☀️ Sunis
+        <span>Finder sol og skygge på barer og restauranter i København</span>
+    </div>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([55.6761, 12.5683], 14);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        fetch('/api/venues')
+    .then(res => res.json())
+    .then(venues => {
+        venues.forEach(venue => {
+            let color;
+            if (!venue.sun_is_up) {
+                color = '#1a1a2e';  // mørkeblå = nat
+            } else if (venue.in_shadow) {
+                color = '#555';     // grå = skygge
+            } else {
+                color = '#f4a520';  // orange = sol
+            }
+
+            const marker = L.circleMarker([venue.lat, venue.lng], {
+                radius: 10,
+                fillColor: color,
+                color: 'white',
+                weight: 2,
+                fillOpacity: 0.9
+            }).addTo(map);
+
+            const status = !venue.sun_is_up ? '🌙 Nat' : venue.in_shadow ? '🌑 Skygge' : '☀️ Sol';
+
+            marker.bindPopup(`
+                <b>${status} ${venue.name}</b><br>
+                ${venue.address}<br><br>
+                <b>Status:</b> ${status}<br>
+                <b>Sol elevation:</b> ${venue.sun_elevation}°
+            `);
+        });
+    });
+    </script>
+</body>
+</html>
